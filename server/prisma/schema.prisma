@@ -25,6 +25,21 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  messages Message[]
+
   @@map("user")
 }
 
+model Message {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  roomId    Int
+  message   String
+  status    Status   @default(active)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("message")
+}

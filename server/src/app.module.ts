@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ProtectSession } from './auth/auth.middleware';
 import { UserController } from './user/user.controller';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UserController } from './user/user.controller';
     UserModule,
     PrismaModule,
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    MessagesModule,
   ],
   providers: [PrismaService],
 })
