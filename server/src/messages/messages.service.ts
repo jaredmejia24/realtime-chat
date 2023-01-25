@@ -10,8 +10,16 @@ import {
 export class MessagesService {
   constructor(private prisma: PrismaService) {}
 
-  create(createMessageDto: CreateMessageDto) {
-    return 'This action adds a new message';
+  async create(createMessageDto: CreateMessageDto) {
+    const message = await this.prisma.message.create({
+      data: {
+        userId: createMessageDto.userId,
+        roomId: createMessageDto.roomId,
+        message: createMessageDto.message,
+      },
+    });
+
+    return { status: 'success', data: { message } };
   }
 
   async findAll(body: FindMessageDto) {
@@ -30,11 +38,23 @@ export class MessagesService {
     return `This action removes a #${id} message`;
   }
 
-  joinRoom() {
-    return;
+  async joinRoom(userId: number, clientId: string) {
+    const clientToUser = await this.prisma.clientToUser.create({
+      data: {
+        userId,
+        clientId,
+      },
+    });
+
+    return { status: 'success', data: { clientToUser } };
   }
 
-  typing() {
-    return;
+  async getClient(clientId: string) {
+    const client = await this.prisma.clientToUser.findFirst({
+      where: { clientId },
+      include: { user: true },
+    });
+
+    return { status: 'success', data: { client } };
   }
 }

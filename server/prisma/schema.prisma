@@ -25,15 +25,16 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  messages Message[]
+  messages     Message[]
+  ClientToUser ClientToUser[]
 
   @@map("user")
 }
 
 model Message {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  roomId    Int
+  userId    Int      @map("user_id")
+  roomId    Int      @map("room_id")
   message   String
   status    Status   @default(active)
   createdAt DateTime @default(now()) @map("created_at")
@@ -42,4 +43,17 @@ model Message {
   user User @relation(fields: [userId], references: [id])
 
   @@map("message")
+}
+
+model ClientToUser {
+  id        Int      @id @default(autoincrement())
+  clientId  String   @map("client_id")
+  userId    Int      @map("user_id")
+  status    Status   @default(active)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("client_to_user")
 }
