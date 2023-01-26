@@ -5,11 +5,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
-import {
-  CreateMessageDto,
-  UpdateMessageDto,
-  FindMessageDto,
-} from './dto/message.dto';
+import { CreateMessageDto, FindMessageDto } from './dto/message.dto';
 import { Server, Socket } from 'socket.io';
 import { ConnectedSocket } from '@nestjs/websockets/decorators';
 
@@ -36,11 +32,6 @@ export class MessagesGateway {
   @SubscribeMessage('findAllMessages')
   findAll(body: FindMessageDto) {
     return this.messagesService.findAll(body);
-  }
-
-  @SubscribeMessage('updateMessage')
-  update(@MessageBody() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(updateMessageDto.id, updateMessageDto);
   }
 
   @SubscribeMessage('removeMessage')

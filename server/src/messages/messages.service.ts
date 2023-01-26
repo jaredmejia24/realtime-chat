@@ -1,10 +1,6 @@
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import {
-  CreateMessageDto,
-  UpdateMessageDto,
-  FindMessageDto,
-} from './dto/message.dto';
+import { CreateMessageDto, FindMessageDto } from './dto/message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -24,14 +20,10 @@ export class MessagesService {
 
   async findAll(body: FindMessageDto) {
     const messages = await this.prisma.message.findMany({
-      where: { userId: body.userId, roomId: body.roomId },
+      where: { roomId: body.roomId },
     });
 
     return { status: 'success', data: { messages } };
-  }
-
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
   }
 
   remove(id: number) {

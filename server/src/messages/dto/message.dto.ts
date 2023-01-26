@@ -24,10 +24,5 @@ export class FindMessageDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  userId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
   roomId: number;
 }

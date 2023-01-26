@@ -24,16 +24,18 @@ const Chat = ({ user }: { user: User }) => {
   }, []);
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
-      <div className="grid grid-cols-4 w-10/12 h-5/6 m-auto bg-[#111B21] shadow-md shadow-black rounded-sm">
-        <div className="flex flex-col gap-4">
+      <div className="flex flex-col sm:grid sm:grid-cols-4 w-10/12 h-5/6 m-auto bg-[#111B21] shadow-md shadow-black rounded-sm">
+        <div className="flex flex-col gap-4 overflow-y-auto">
           {users.data?.users.map((user) => (
             <EachUser key={user.id} user={user} />
           ))}
         </div>
-        <div className="col-span-3 bg-[#182127] text-white">
+        <div className="h-full sm:col-span-3 bg-[#182127] text-white">
           {messages.status === "loading" ? (
             <div className="flex h-full justify-center items-center">
-              <h1 className="text-lg">Socket.io project send and recieve messages</h1>
+              <h1 className="text-lg text-center">
+                Socket.io project send and recieve messages
+              </h1>
             </div>
           ) : (
             messages.data?.messages.map((message) => (
