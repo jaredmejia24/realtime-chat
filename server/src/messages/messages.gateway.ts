@@ -24,13 +24,13 @@ export class MessagesGateway {
   async create(@MessageBody() createMessageDto: CreateMessageDto) {
     const message = await this.messagesService.create(createMessageDto);
 
-    this.server.emit('message', message.data);
+    this.server.emit('message', message.data.message);
 
     return message;
   }
 
   @SubscribeMessage('findAllMessages')
-  findAll(body: FindMessageDto) {
+  findAll(@MessageBody() body: FindMessageDto) {
     return this.messagesService.findAll(body);
   }
 
@@ -41,10 +41,10 @@ export class MessagesGateway {
 
   @SubscribeMessage('join')
   joinRoom(
-    @MessageBody('userId') userId: number,
+    @MessageBody('userId') room: string,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.joinRoom(userId, client.id);
+    return this.messagesService.joinRoom(room, client);
   }
 
   @SubscribeMessage('typing')

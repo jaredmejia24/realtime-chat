@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateMessageDto, FindMessageDto } from './dto/message.dto';
@@ -13,6 +14,19 @@ export class MessagesService {
         roomId: createMessageDto.roomId,
         message: createMessageDto.message,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            password: false,
+            email: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        },
+      },
     });
 
     return { status: 'success', data: { message } };
@@ -21,6 +35,19 @@ export class MessagesService {
   async findAll(body: FindMessageDto) {
     const messages = await this.prisma.message.findMany({
       where: { roomId: body.roomId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            password: false,
+            email: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        },
+      },
     });
 
     return { status: 'success', data: { messages } };
@@ -30,15 +57,10 @@ export class MessagesService {
     return `This action removes a #${id} message`;
   }
 
-  async joinRoom(userId: number, clientId: string) {
-    const clientToUser = await this.prisma.clientToUser.create({
-      data: {
-        userId,
-        clientId,
-      },
-    });
+  async joinRoom(room: string, client: Socket) {
+    client.join(room);
 
-    return { status: 'success', data: { clientToUser } };
+    return;
   }
 
   async getClient(clientId: string) {

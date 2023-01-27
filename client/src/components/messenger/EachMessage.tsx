@@ -4,7 +4,7 @@ import { Message } from '../../types/messages.types';
 const EachMessage = ({message}: {message: Message}) => {
     return (
         <div>
-            {message.id}
+            {message.message}
         </div>
     );
 };
