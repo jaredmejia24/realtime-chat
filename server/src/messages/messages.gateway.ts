@@ -5,11 +5,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
-import {
-  CreateMessageDto,
-  UpdateMessageDto,
-  FindMessageDto,
-} from './dto/message.dto';
+import { CreateMessageDto, FindMessageDto } from './dto/message.dto';
 import { Server, Socket } from 'socket.io';
 import { ConnectedSocket } from '@nestjs/websockets/decorators';
 
@@ -28,19 +24,14 @@ export class MessagesGateway {
   async create(@MessageBody() createMessageDto: CreateMessageDto) {
     const message = await this.messagesService.create(createMessageDto);
 
-    this.server.emit('message', message.data);
+    this.server.emit('message', message.data.message);
 
     return message;
   }
 
   @SubscribeMessage('findAllMessages')
-  findAll(body: FindMessageDto) {
+  findAll(@MessageBody() body: FindMessageDto) {
     return this.messagesService.findAll(body);
-  }
-
-  @SubscribeMessage('updateMessage')
-  update(@MessageBody() updateMessageDto: UpdateMessageDto) {
-    return this.messagesService.update(updateMessageDto.id, updateMessageDto);
   }
 
   @SubscribeMessage('removeMessage')
@@ -50,10 +41,10 @@ export class MessagesGateway {
 
   @SubscribeMessage('join')
   joinRoom(
-    @MessageBody('userId') userId: number,
+    @MessageBody('userId') room: string,
     @ConnectedSocket() client: Socket,
   ) {
-    return this.messagesService.joinRoom(userId, client.id);
+    return this.messagesService.joinRoom(room, client);
   }
 
   @SubscribeMessage('typing')

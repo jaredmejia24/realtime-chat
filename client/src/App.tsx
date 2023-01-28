@@ -40,7 +40,7 @@ function App() {
   return (
     <>
       {user.status === "success" ? (
-        <Chat user={user} />
+        <Chat currentUser={user} />
       ) : (
         <Login changeUser={changeUser} />
       )}

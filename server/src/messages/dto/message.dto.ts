@@ -7,9 +7,8 @@ export class CreateMessageDto {
   userId: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  roomId: number;
+  @IsString()
+  roomId: string;
 
   @IsNotEmpty()
   @IsString()
@@ -22,12 +21,6 @@ export class UpdateMessageDto {
 
 export class FindMessageDto {
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  userId: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  roomId: number;
+  @IsString()
+  roomId: string;
 }

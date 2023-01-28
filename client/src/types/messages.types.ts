@@ -1,10 +1,4 @@
-export type MessageArray = {
-  status: string;
-  data?: {
-    messages: Message[];
-  };
-};
-
+import { User } from "./users.types";
 export type Message = {
   id: number;
   userId: number;
@@ -13,4 +7,5 @@ export type Message = {
   status: string;
   createdAt: string;
   updatedAt: string;
+  user: User;
 };

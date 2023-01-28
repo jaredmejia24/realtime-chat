@@ -1,10 +1,7 @@
+import { Socket } from 'socket.io';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import {
-  CreateMessageDto,
-  UpdateMessageDto,
-  FindMessageDto,
-} from './dto/message.dto';
+import { CreateMessageDto, FindMessageDto } from './dto/message.dto';
 
 @Injectable()
 export class MessagesService {
@@ -17,6 +14,19 @@ export class MessagesService {
         roomId: createMessageDto.roomId,
         message: createMessageDto.message,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            password: false,
+            email: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        },
+      },
     });
 
     return { status: 'success', data: { message } };
@@ -24,29 +34,33 @@ export class MessagesService {
 
   async findAll(body: FindMessageDto) {
     const messages = await this.prisma.message.findMany({
-      where: { userId: body.userId, roomId: body.roomId },
+      where: { roomId: body.roomId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            password: false,
+            email: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        },
+      },
     });
 
     return { status: 'success', data: { messages } };
-  }
-
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
   }
 
   remove(id: number) {
     return `This action removes a #${id} message`;
   }
 
-  async joinRoom(userId: number, clientId: string) {
-    const clientToUser = await this.prisma.clientToUser.create({
-      data: {
-        userId,
-        clientId,
-      },
-    });
+  async joinRoom(room: string, client: Socket) {
+    client.join(room);
 
-    return { status: 'success', data: { clientToUser } };
+    return;
   }
 
   async getClient(clientId: string) {
