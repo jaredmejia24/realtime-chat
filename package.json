@@ -6,7 +6,8 @@
   "scripts": {
     "client:dev":"cd client && npm run dev",
     "server:dev":"cd server && npm run start:dev",
-    "dev": "npm-run-all --parallel client:dev server:dev"
+    "dev": "npm-run-all --parallel client:dev server:dev",
+    "server:start": "node server/dist/main.js"
   },
   "repository": {
     "type": "git",

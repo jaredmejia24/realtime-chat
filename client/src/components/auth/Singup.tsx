@@ -30,14 +30,13 @@ const Singup = ({
         firstName,
         lastName,
       };
-      const res = await axios.post(`${API_URL}/auth/signup`, data);
+      await axios.post(`${API_URL}/auth/signup`, data);
 
-      const newUser = {
-        status: res.data.status,
-        user: res.data.user,
-      };
+      const body = { email, password };
 
-      changeUser(newUser);
+      const response = await axios.post(`${API_URL}/auth/login`, body);
+
+      changeUser(response.data);
     } catch (error) {
       const err = error as AxiosError;
       if (axios.isAxiosError(err)) {
