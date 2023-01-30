@@ -123,7 +123,7 @@ const Login = ({
           <p className="text-white">
             Don't have an account?{" "}
             <span onClick={toogleIsLogin} className="text-red-500 cursor-pointer">
-              Sing up
+              Sign up
             </span>
           </p>
         </form>
