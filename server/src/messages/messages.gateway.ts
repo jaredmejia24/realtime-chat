@@ -21,10 +21,15 @@ export class MessagesGateway {
   constructor(private readonly messagesService: MessagesService) {}
 
   @SubscribeMessage('createMessage')
-  async create(@MessageBody() createMessageDto: CreateMessageDto) {
+  async create(
+    @MessageBody() createMessageDto: CreateMessageDto,
+    @ConnectedSocket() client: Socket,
+  ) {
     const message = await this.messagesService.create(createMessageDto);
-
-    this.server.emit('message', message.data.message);
+    await this.joinRoom(message.data.message.roomId, client);
+    this.server
+      .to(message.data.message.roomId)
+      .emit('message', message.data.message);
 
     return message;
   }
@@ -41,7 +46,7 @@ export class MessagesGateway {
 
   @SubscribeMessage('join')
   joinRoom(
-    @MessageBody('userId') room: string,
+    @MessageBody('room') room: string,
     @ConnectedSocket() client: Socket,
   ) {
     return this.messagesService.joinRoom(room, client);
@@ -49,11 +54,12 @@ export class MessagesGateway {
 
   @SubscribeMessage('typing')
   async typing(
-    @MessageBody('isTyping') isTyping: boolean,
+    @MessageBody() isTyping: boolean,
+    userId: number,
     @ConnectedSocket() client: Socket,
   ) {
-    const user = await this.messagesService.getClient(client.id);
+    const user = await this.messagesService.getClient(userId);
 
-    client.broadcast.emit('typing', { user: user.data.client.user, isTyping });
+    client.broadcast.emit('typing', { user: user.data.user, isTyping });
   }
 }

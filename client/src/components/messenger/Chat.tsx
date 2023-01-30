@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import io from "socket.io-client";
 import { useEffect } from "react";
 import { User, UsersArray } from "../../types/users.types";
@@ -17,18 +17,10 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState<UsersArray>({});
   const [currentUserIdClicked, setCurrentUserIdClicked] = useState(0);
-  const [reRender, setReRender] = useState(false);
+  const [typingDisplay, setTypingDisplay] = useState("");
 
   const changeRoom = (room: string) => {
     setRoom(room);
-  };
-
-  const changeMessages = (messages: Message[]) => {
-    setMessages(messages);
-  };
-
-  const toogleReRender = () => {
-    setReRender(!reRender);
   };
 
   useEffect(() => {
@@ -40,8 +32,6 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   }, []);
 
   useEffect(() => {
-    console.log("in use effect");
-
     if (room !== "") {
       try {
         socket.emit("findAllMessages", { roomId: room }, (res: any) => {
@@ -53,38 +43,44 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
     } else {
       setMessages([]);
     }
-
-    return () => {
-      socket.off("message");
-    };
   }, [room]);
 
+  //listens sockets
   useEffect(() => {
-    socket.on("message", (message) => {
-      setMessages((current) => [...current, message]);
+    socket.on("message",(message) => {
+      setMessages((current) => [message, ...current]);
+    });
+
+    socket.on("typing", ({ user, isTyping }) => {
+      if (isTyping) {
+        setTypingDisplay(`${user.firstName} ${user.lastName}`);
+      } else {
+        setTypingDisplay("");
+      }
     });
     return () => {
       socket.off("message");
     };
   }, [socket]);
 
-  console.log({ messages });
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
-      <div className="flex flex-col sm:grid sm:grid-cols-4 w-10/12 h-5/6 m-auto bg-[#111B21] shadow-md shadow-black rounded-sm">
+      <div className="flex flex-col sm:grid sm:grid-cols-4 w-10/12 h-fit min-h-[792px] xl:min-h-[824px] m-auto bg-[#111B21] shadow-md shadow-black rounded-sm">
         <div className="flex flex-col overflow-y-auto">
-          {users.data?.users.map((user) => (
-            <EachUser
-              setCurrentUserIdClicked={setCurrentUserIdClicked}
-              currentUserIdClicked={currentUserIdClicked}
-              changeRoom={changeRoom}
-              currentUser={currentUser}
-              key={user.id}
-              user={user}
-            />
-          ))}
+          {users.data?.users
+            .filter((user) => currentUser.data?.user.id !== user.id)
+            .map((user) => (
+              <EachUser
+                setCurrentUserIdClicked={setCurrentUserIdClicked}
+                currentUserIdClicked={currentUserIdClicked}
+                changeRoom={changeRoom}
+                currentUser={currentUser}
+                key={user.id}
+                user={user}
+              />
+            ))}
         </div>
-        <div className="h-full sm:col-span-3 bg-[#182127] text-white">
+        <div className="h-full flex flex-col p-6 items-stretch justify-evenly gap-2 sm:col-span-3 bg-[#182127] text-white">
           {messages.length === 0 && room === "" ? (
             <div className="flex h-full justify-center items-center">
               <h1 className="text-lg text-center">
@@ -98,21 +94,24 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
               </h1>
             </div>
           ) : (
-            <div className="flex flex-col h-full justify-center items-center">
+            <div className="flex flex-col-reverse h-[28rem] px-3 gap-4 overflow-auto sm:h-[38rem] xl:h-[45rem]">
               {messages.map((message) => (
-                <EachMessage key={message.id} message={message} />
+                <EachMessage
+                  key={message.id}
+                  currentUser={currentUser}
+                  message={message}
+                />
               ))}
             </div>
           )}
           {messages.length >= 0 && room !== "" ? (
-            <>
+            <div>
               <InputMessenger
                 socket={socket}
-                toogleReRender={toogleReRender}
                 currentUser={currentUser}
                 room={room}
               />
-            </>
+            </div>
           ) : null}
         </div>
       </div>

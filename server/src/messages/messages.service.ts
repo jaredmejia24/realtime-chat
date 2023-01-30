@@ -48,6 +48,7 @@ export class MessagesService {
           },
         },
       },
+      orderBy: { createdAt: 'desc' },
     });
 
     return { status: 'success', data: { messages } };
@@ -58,17 +59,22 @@ export class MessagesService {
   }
 
   async joinRoom(room: string, client: Socket) {
-    client.join(room);
-
-    return;
-  }
-
-  async getClient(clientId: string) {
-    const client = await this.prisma.clientToUser.findFirst({
-      where: { clientId },
-      include: { user: true },
+    const roomInDb = await this.prisma.message.findFirst({
+      where: { roomId: room },
     });
 
-    return { status: 'success', data: { client } };
+    if (!roomInDb) {
+      return { status: 'error', message: 'Room Not Found' };
+    }
+
+    client.join(roomInDb.roomId);
+
+    return { status: 'success', roomId: roomInDb.roomId };
+  }
+
+  async getClient(userId: number) {
+    const user = await this.prisma.user.findFirst({ where: { id: userId } });
+
+    return { status: 'success', data: { user } };
   }
 }

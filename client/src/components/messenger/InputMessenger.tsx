@@ -8,14 +8,24 @@ const InputMessenger = ({
   socket,
   currentUser,
   room,
-  toogleReRender,
 }: {
   socket: Socket;
   currentUser: User;
   room: string;
-  toogleReRender: () => void;
 }) => {
   const [message, setMessage] = useState("");
+
+  let timeout;
+
+  const emitTyping = () => {
+    socket.emit("typing"), { isTyping: true };
+    timeout = setTimeout(() => {
+      socket.emit("typing", {
+        isTyping: false,
+        user: currentUser.data?.user.id,
+      });
+    }, 2000);
+  };
 
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +39,6 @@ const InputMessenger = ({
       },
       (res: any) => {
         setMessage("");
-        toogleReRender();
       }
     );
   };
@@ -37,16 +46,18 @@ const InputMessenger = ({
   return (
     <form
       onSubmit={sendMessage}
-      className="mt-[-4rem] flex gap-2 justify-center items-center"
+      className="flex gap-2 m-2 justify-center items-center"
     >
-      <label htmlFor="message">Message:</label>
-      <input
+      <label className="hidden sm:inline" htmlFor="message">Message:</label>
+      <textarea
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        className="text-black px-2 py-1 w-5/12"
+        onChange={(e) => {
+          emitTyping();
+          setMessage(e.target.value);
+        }}
+        className="text-black px-2 py-1 w-9/12 sm:w-7/12 max-h-[5rem]"
         required
         name="message"
-        type="text"
         id="message"
       />
       <button

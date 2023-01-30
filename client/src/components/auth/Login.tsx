@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { User } from "../types/users.types";
+import { User } from "../../types/users.types";
 
 const API_URL = import.meta.env.VITE_API_URL + "/api/v1";
 
 type ChangeUser = (user: User) => void;
+type ToogleIsLogin = () => void;
 
-const Login = ({ changeUser }: { changeUser: ChangeUser }) => {
+const Login = ({
+  changeUser,
+  toogleIsLogin,
+}: {
+  changeUser: ChangeUser;
+  toogleIsLogin: ToogleIsLogin;
+}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -27,12 +34,32 @@ const Login = ({ changeUser }: { changeUser: ChangeUser }) => {
     }
   };
   return (
-    <div className="w-full h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md py-4 px-6 bg-gray-800 shadow-black shadow-md">
+      <div className="w-full max-w-lg py-4 px-6 bg-gray-800 shadow-black shadow-md">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-white">
             Login to your account
           </h2>
+          <h3 className="text-red-500 text-center text-2xl font-medium mb-3">
+            Test accounts
+          </h3>
+        </div>
+        <div className="flex flex-col gap-3 justify-around md:flex-row">
+          <div className="text-white shadow-slate-900 bg-slate-700 rounded-md shadow-lg py-3 px-2">
+            <p className="mb-3">
+              Email:<span className="ml-1">admin@gmail.com</span>
+            </p>
+            <p>
+              Password:<span className="ml-1">admin1234</span>
+            </p>
+          </div>
+          <div className="text-white shadow-slate-900 bg-slate-700 rounded-md shadow-lg py-3 px-2">
+            <p className="mb-3">
+              Email:<span className="ml-1">jared@gmail.com</span>
+            </p>
+            <p>
+              Password:<span className="ml-1">jared1234</span>
+            </p>
+          </div>
         </div>
         <form
           onSubmit={login}
@@ -93,9 +120,14 @@ const Login = ({ changeUser }: { changeUser: ChangeUser }) => {
               Login
             </button>
           </div>
+          <p className="text-white">
+            Don't have an account?{" "}
+            <span onClick={toogleIsLogin} className="text-red-500 cursor-pointer">
+              Sing up
+            </span>
+          </p>
         </form>
       </div>
-    </div>
   );
 };
 

@@ -23,9 +23,21 @@ const EachUser = ({
   setCurrentUserIdClicked: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const joinRoom = () => {
-    const room = currentUser.data?.user.email + user.email;
-    socket.emit("join", { room });
-    changeRoom(room);
+    let room = currentUser.data?.user.email + user.email;
+    socket.emit("join", { room }, (res: any) => {
+      if (res.status === "error") {
+        room = user.email + currentUser.data?.user.email;
+        socket.emit("join", { room }, (res: any) => {
+          if (res.status === "error") {
+            changeRoom(room);
+          } else {
+            changeRoom(res.roomId);
+          }
+        });
+      } else {
+        changeRoom(res.roomId);
+      }
+    });
     setCurrentUserIdClicked(user.id);
   };
   return (

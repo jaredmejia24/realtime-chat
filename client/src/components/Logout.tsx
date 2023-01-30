@@ -8,7 +8,6 @@ type ChangeUser = (user: User) => void;
 
 const Logout = ({ changeUser }: { changeUser: ChangeUser }) => {
   const logout = async () => {
-    console.log(API_URL);
 
     await axios.post(`${API_URL}/auth/logout`);
     changeUser({ status: "Unauthorized" });

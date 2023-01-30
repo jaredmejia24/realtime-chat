@@ -2,9 +2,9 @@ import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import "./App.css";
 import Chat from "./components/messenger/Chat";
-import Login from "./components/Login";
 import Logout from "./components/Logout";
 import { User } from "./types/users.types";
+import Auth from "./components/auth/Auth";
 
 const API_URL = import.meta.env.VITE_API_URL + "/api/v1";
 
@@ -27,8 +27,6 @@ function App() {
     }
   };
 
-  console.log(user);
-
   useEffect(() => {
     getUserInSession();
   }, []);
@@ -42,7 +40,7 @@ function App() {
       {user.status === "success" ? (
         <Chat currentUser={user} />
       ) : (
-        <Login changeUser={changeUser} />
+        <Auth changeUser={changeUser} />
       )}
       {user.status === "success" && <Logout changeUser={changeUser} />}
     </>
