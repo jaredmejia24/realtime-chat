@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ProtectSession } from './auth/auth.middleware';
 import { UserController } from './user/user.controller';
 import { MessagesModule } from './messages/messages.module';
+import { FrontModule } from './front/front.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MessagesModule } from './messages/messages.module';
     PrismaModule,
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     MessagesModule,
+    FrontModule,
   ],
   providers: [PrismaService],
 })
