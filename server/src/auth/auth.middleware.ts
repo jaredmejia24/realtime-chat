@@ -46,6 +46,9 @@ export class ProtectSession implements NestMiddleware {
       if (error.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Session Expired');
       }
+      if (error.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Invalid JWT');
+      }
       next(error);
     }
   }

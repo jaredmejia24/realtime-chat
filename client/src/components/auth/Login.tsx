@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { User } from "../../types/users.types";
 
-const API_URL = import.meta.env.VITE_API_URL + "/api/v1";
+const API_URL = import.meta.env.VITE_API_URL + "/realtime-chat/api/v1";
 
 type ChangeUser = (user: User) => void;
 type ToogleIsLogin = () => void;

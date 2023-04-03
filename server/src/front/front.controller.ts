@@ -1,10 +1,15 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
+import { FrontService } from './front.service';
+import { Response } from 'express';
 
-@Controller('front')
+@Controller()
 export class FrontController {
+  constructor(private readonly frontService: FrontService) {}
   @Get()
-  @Render('index')
-  root() {
-    return this.root();
+  root(@Res({ passthrough: false }) res: Response) {
+    const path = this.frontService.root();
+    res.status(200).sendFile(path);
+
+    return this.frontService.root();
   }
 }

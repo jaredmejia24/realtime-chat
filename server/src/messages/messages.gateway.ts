@@ -13,6 +13,7 @@ import { ConnectedSocket } from '@nestjs/websockets/decorators';
   cors: {
     origin: '*',
   },
+  path: '/realtime-chat/socket.io',
 })
 export class MessagesGateway {
   @WebSocketServer()
@@ -61,5 +62,10 @@ export class MessagesGateway {
     const user = await this.messagesService.getClient(userId);
 
     client.broadcast.emit('typing', { user: user.data.user, isTyping });
+  }
+
+  @SubscribeMessage('connect_error')
+  async errors(err) {
+    console.log(err);
   }
 }

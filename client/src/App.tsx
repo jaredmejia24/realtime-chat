@@ -6,7 +6,7 @@ import Logout from "./components/Logout";
 import { User } from "./types/users.types";
 import Auth from "./components/auth/Auth";
 
-const API_URL = import.meta.env.VITE_API_URL + "/api/v1";
+const API_URL = import.meta.env.VITE_API_URL + "/realtime-chat/api/v1";
 
 function App() {
   const [user, setUser] = useState<User>({ status: "Unauthorized" });

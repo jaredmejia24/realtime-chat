@@ -7,7 +7,9 @@ type ChangeRoom = (room: string) => void;
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const socket = io(API_URL);
+const socket = io(`http://localhost:4000`, {
+  path: "/realtime-chat/socket.io",
+});
 
 const EachUser = ({
   user,
@@ -15,15 +17,19 @@ const EachUser = ({
   currentUser,
   currentUserIdClicked,
   setCurrentUserIdClicked,
+  setIsLoading,
 }: {
   user: SingleUser;
   changeRoom: ChangeRoom;
   currentUser: User;
   currentUserIdClicked: number;
   setCurrentUserIdClicked: React.Dispatch<React.SetStateAction<number>>;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const joinRoom = () => {
+    setIsLoading(true);
     let room = currentUser.data?.user.email + user.email;
+
     socket.emit("join", { room }, (res: any) => {
       if (res.status === "error") {
         room = user.email + currentUser.data?.user.email;

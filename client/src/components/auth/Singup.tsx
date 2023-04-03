@@ -5,7 +5,7 @@ import { User } from "../../types/users.types";
 type ChangeUser = (user: User) => void;
 type ToogleIsLogin = () => void;
 
-const API_URL = import.meta.env.VITE_API_URL + "/api/v1";
+const API_URL = import.meta.env.VITE_API_URL + "/realtime-chat/api/v1";
 
 const Singup = ({
   toogleIsLogin,
@@ -40,6 +40,7 @@ const Singup = ({
     } catch (error) {
       const err = error as AxiosError;
       if (axios.isAxiosError(err)) {
+        //@ts-ignore
         if (err.response?.data.message === "Email Already Exists") {
           alert("Email Already Exists");
         }

@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import path from 'path';
+import { join } from 'path';
 
 @Injectable()
 export class FrontService {
   root() {
-    const indexPath = path.join(__dirname, '..', '..', 'public');
+    const indexPath = join(__dirname, '..', '..', 'public', 'index.html');
     return indexPath;
   }
 }

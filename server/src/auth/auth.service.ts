@@ -36,6 +36,7 @@ export class AuthService {
     //set cookie
     const options = {
       httpOnly: true,
+      maxAge: 2592000000,
     };
     res.cookie('token', token, options);
 
