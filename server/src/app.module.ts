@@ -8,6 +8,8 @@ import { ProtectSession } from './auth/auth.middleware';
 import { UserController } from './user/user.controller';
 import { MessagesModule } from './messages/messages.module';
 import { FrontModule } from './front/front.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -15,6 +17,9 @@ import { FrontModule } from './front/front.module';
     UserModule,
     PrismaModule,
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    }),
     MessagesModule,
     FrontModule,
   ],
