@@ -8,6 +8,8 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  app.setGlobalPrefix('realtime-chat');
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,7 +17,26 @@ async function bootstrap() {
     }),
   );
 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  const options = {
+    dotfiles: 'ignore',
+    etag: false,
+    extensions: [
+      'htm',
+      'html',
+      'css',
+      'js',
+      'ico',
+      'jpg',
+      'jpeg',
+      'png',
+      'svg',
+    ],
+    index: ['index.html'],
+    maxAge: '1m',
+    redirect: false,
+  };
+
+  app.useStaticAssets(join(__dirname, '..', 'public'), options);
 
   app.enableCors({ origin: true, credentials: true });
 
