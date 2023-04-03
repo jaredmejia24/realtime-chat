@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/realtime-chat/(.*)", "destination": "/server/dist" }
-  ]
-}
